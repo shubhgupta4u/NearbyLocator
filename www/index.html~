@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Device Properties Example</title>
+
+	  <!-- Include meta tag to ensure proper rendering and touch zooming -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+	 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC3z-gnkk-CmziAPSFzTderEFjKcrplv_s"> </script>
+	 
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/angular-route.min.js"></script>
+    <script src="/Script/app.js"></script>
+    <script src="/Script/Controller/Controller.js"></script>
+    <script src="/Script/Service/Service.js"></script>
+    
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+	 <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+	 <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <style>
+		html, body, #map {
+    		width: 100vw;
+   		height:100vh;
+    		margin: 0;
+    		padding: 0;
+		}
+		#map {
+    		/*position: relative;*/
+    		background-color: grey;
+		}
+		.map
+		{
+			padding:0px;
+		}
+    </style>
+  </head>
+  <body ng-app="myApp">
+  
+  <div data-role="page" id="pageone">
+  		<div data-role="header" data-position="fixed" style="height:45px;" class="ui-bar">
+    		<a href="#" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
+  			<h3 style="padding:0px;">Post office Finder</h3>
+  			<a href="#" class="ui-btn ui-corner-all ui-shadow ui-icon-search ui-btn-icon-left">Search</a>
+  		</div>
+
+  		<div data-role="main" class="ui-content map">
+    		<ng-view></ng-view>
+  		</div>
+
+  		<div data-role="footer" data-position="fixed">
+    		<div data-role="navbar" class="ui-navbar ui-mini" role="navigation" style="margin:0px;">
+			<ul class="ui-grid-b">
+				<li class="ui-block-a">
+					<a href="#" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-theme="a" data-inline="true" class="ui-btn ui-btn-inline ui-btn-up-a ui-icon-plus ui-btn-icon-top">
+						<span class="ui-btn-inner"><span class="ui-btn-text">Facebook</span></span>
+					</a>
+				</li>
+				<li class="ui-block-b">
+					<a href="#" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-theme="a" data-inline="true" class="ui-btn ui-btn-inline ui-btn-up-a ui-icon-plus ui-btn-icon-top">
+						<span class="ui-btn-inner"><span class="ui-btn-text">Twitter</span></span>
+					</a>
+				</li>
+				<li class="ui-block-c">
+					<a href="#" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-theme="a" data-inline="true" class="ui-btn ui-btn-inline ui-btn-up-a ui-icon-plus ui-btn-icon-top">
+						<span class="ui-btn-inner"><span class="ui-btn-text">Instagram</span></span>
+					</a>
+				</li>
+			</ul>
+		</div>
+  		</div>
+	</div>
+	
+<!--     	<div data-role="header" data-position="fixed">
+		<h1>Post office Finder</h1>
+		<a href="index.html" data-icon="gear" class="ui-btn-right">Options</a>
+	</div>
+		<div data-role="footer">		
+		<div data-role="navbar">
+			<ul>
+			<li><a href="#" data-icon="grid">One</a></li>
+			<li><a href="#" data-icon="star">Two</a></li>
+			<li><a href="#" data-icon="gear">Three</a></li>
+		</ul>
+		</div>
+	</div>
+
+      <div data-role="header" class="ui-header ui-bar-a" role="banner">
+			<h1 class="ui-title" role="heading" aria-level="1">I'm a header</h1>
+			<a href="index.html" data-icon="gear" class="ui-btn-right ui-btn ui-btn-up-a ui-shadow ui-btn-corner-all ui-btn-icon-left" 			data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a">
+				<span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Options</span>
+				<span class="ui-icon ui-icon-gear ui-icon-shadow">&nbsp;</span></span>
+			</a>
+			<div data-role="navbar" class="ui-navbar ui-mini" role="navigation">
+			<ul class="ui-grid-b">
+				<li class="ui-block-a">
+					<a href="#" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-theme="a" data-inline="true" class="ui-btn ui-btn-inline ui-btn-up-a">
+						<span class="ui-btn-inner"><span class="ui-btn-text">One</span></span>
+					</a>
+				</li>
+				<li class="ui-block-b">
+					<a href="#" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-theme="a" data-inline="true" class="ui-btn ui-btn-inline ui-btn-active ui-btn-up-a">
+						<span class="ui-btn-inner"><span class="ui-btn-text">Two</span></span>
+					</a>
+				</li>
+				<li class="ui-block-c">
+					<a href="#" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-theme="a" data-inline="true" class="ui-btn ui-btn-inline ui-btn-up-a">
+						<span class="ui-btn-inner"><span class="ui-btn-text">Three</span></span>
+					</a>
+				</li>
+			</ul>
+		</div>
+		</div>
+   -->
+  </body>
+</html>
