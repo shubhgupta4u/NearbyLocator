@@ -66,15 +66,30 @@ angular.module('myApp')
         			});
               
             } else {
-              window.alert('No results found');
+            	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>No results found.</h1></div>").css({ "display": "block", "opacity": 0.96, "top": $(window).scrollTop() + 100 })
+  .appendTo( $.mobile.pageContainer )
+  .delay( 1500 )
+  .fadeOut( 400, function(){
+    $(this).remove();
+  });
             }
           } else {
-            window.alert('Geocoder failed due to: ' + status);
+          	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>Geocoder failed due to: " + status +".</h1></div>").css({ "display": "block", "opacity": 0.96, "top": $(window).scrollTop() + 100 })
+  .appendTo( $.mobile.pageContainer )
+  .delay( 1500 )
+  .fadeOut( 400, function(){
+    $(this).remove();
+  });
           }
         });
     }
     function handleLocationError(errorMsg) {
-
+$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>" + errorMsg +"</h1></div>").css({ "display": "block", "opacity": 0.96, "top": $(window).scrollTop() + 100 })
+  .appendTo( $.mobile.pageContainer )
+  .delay( 1500 )
+  .fadeOut( 400, function(){
+    $(this).remove();
+  });
 		  var indiaPos = {lat: 20.5937, lng: 78.9629};
 		  var map = new google.maps.Map(document.getElementById('map'), {
           center: indiaPos,
