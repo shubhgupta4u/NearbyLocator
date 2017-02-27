@@ -13,10 +13,10 @@
     <author email="shubhgupta4u@gmail.com" href="https://www.linkedin.com/in/shubh-gupta-63607313/">
         Shubh Gupta
     </author>
-    <access origin="*.google.com" />
-    <access origin="*.googleapis.com" />
     <content src="index.html" />
     <access origin="*" />
+    <access origin="*.google.com" />
+    <access origin="*.googleapis.com" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
