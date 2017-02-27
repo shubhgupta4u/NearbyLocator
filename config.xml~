@@ -7,16 +7,15 @@
     <author email="shubhgupta4u@gmail.com" href="https://www.linkedin.com/in/shubh-gupta-63607313/">
         Shubh Gupta
     </author>
-    <access origin="*" />
-    <access origin="*.google.com"/>
-    <access origin="*.googleapis.com"/>
      <!--
         Enable individual API permissions here.
         The "device" permission is required for the 'deviceready' event.
     -->
     <feature name="http://api.phonegap.com/1.0/device" />	
 	 <feature name="http://api.phonegap.com/1.0/geolocation"/>
-
+	 <feature name="Geolocation">
+    	<param name="android-package" value="org.apache.cordova.geolocation.GeoBroker" />
+	 </feature>
     <content src="index.html" />
     
      <!--
@@ -126,7 +125,11 @@
         <icon height="360" platform="windows" src="www/res/icon/windows/Wide310x150Logo.scale-240.png" width="744" />
         <splash height="1920" platform="windows" src="www/res/screen/windows/SplashScreenPhone.scale-240.png" width="1152" />
     </platform>
+    
+    
     <access origin="*" />
+    <access origin="*.google.com"/>
+    <access origin="*.googleapis.com"/>
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
