@@ -1,204 +1,90 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Device Properties Example</title>
-
-	  <!-- Include meta tag to ensure proper rendering and touch zooming -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+<html class="ui-mobile">
+<head>
+    <title>Pincode Finder</title>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; img-src * data: 'unsafe-inline'">
     <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-	 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC3z-gnkk-CmziAPSFzTderEFjKcrplv_s"> </script>
-	 
-    <script src="/js/angular.min.js"></script>
-    <script src="/js/angular-route.min.js"></script>
-    <script src="/Script/app.js"></script>
-    <script src="/Script/Controller/Controller.js"></script>
-    <script src="/Script/Service/Service.js"></script>
-    
-    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
-	 <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-	 <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-	 
-	 <script type="text/javascript">
-	 (function (global) {
-    "use strict";
-    
- 		$( document ).bind( "mobileinit", function() {
-    		// Make your jQuery Mobile framework configuration changes here!
-   		 $.mobile.allowCrossDomainPages = true;
-		});// Wait for device API libraries to load
-    
-    
-    function onDeviceReady () {
-        document.addEventListener("online", onOnline, false);
-        document.addEventListener("resume", onResume, false);
-        loadMapsApi();
-    }
- 
-    function onOnline () {
-        loadMapsApi();
-    }
- 
-    function onResume () {
-        loadMapsApi();
-    }
- 
-    function loadMapsApi () {
-        // if online and maps not already loaded
-        //    then load maps api
-			 if (navigator.geolocation) {        
-        		navigator.geolocation.getCurrentPosition(onSuccess, onError);
-        		//onSuccess(null);
-        }
-        else {
-        	handleLocationError("Error: Your browser doesn\'t support geolocation.");        	
-        }
-    }
-    
-    // onSuccess Callback receives a Position object
-    //
- 	  function onSuccess(position) {
-    	 initMap(position.coords.latitude , position.coords.longitude);
-    }
-
-    // onError Callback receives a PositionError object
-    //
-    function onError(error) {
-	  		if(error.message.indexOf("Only secure origins are allowed") == 0) {
-      		$.getJSON('https://ipinfo.io/geo', function(response) { 
-        		var loc = response.loc.split(',');
-        		var coords = {
-            	latitude: parseFloat(loc[0]),
-            	longitude: parseFloat(loc[1])
-        		};
-        		initMap(coords.latitude , coords.longitude);
-        	});  
-    		}      
-    		else {    		
-    			handleLocationError("Error: The Geolocation service failed.");
-    		}
-    }
-    
- 	  function initMap(lat, long) {
-        if(lat === undefined || long === undefined)
-        {
-      	  return;
-        }
-        var currentPos = {lat: lat, lng: long};
-        var map = new google.maps.Map(document.getElementById('map'), {
-          center: currentPos,
-          zoom: 15
-        });
-        var geocoder = new google.maps.Geocoder();
-        var infowindow = new google.maps.InfoWindow();
-        geocoder.geocode({'location': currentPos}, function(results, status) {
-        	 if (status === 'OK'){
-        	 	if(results[1]) {
-              map.setZoom(11);
-              var marker = new google.maps.Marker({
-                position: currentPos,
-                map: map
-              });
-              infowindow.setContent(results[1].formatted_address);
-              marker.addListener('click', function() {
-          				infowindow.open(map, marker);
-        			}); 
-           	}
-           	else {
-            	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>No results found.</h1></div>")
-            			.css({ "display": "block", "opacity": 0.96, "top": 								$(window).scrollTop() + 100 })
- 							.appendTo( $.mobile.pageContainer )
-  							.delay( 1500 )
- 							.fadeOut( 400, function(){
-    				  			$(this).remove();
-  							});
-            }
-           }
-           else {
-           		$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>Geocoder failed due to: " + status +".</h1></div>")
-           		.css({ "display": "block", "opacity": 0.96, "top": $(window).scrollTop() + 100 })
-  					.appendTo( $.mobile.pageContainer )
-  					.delay( 1500 )
-  					.fadeOut( 400, function(){
-    					$(this).remove();
- 					 });
-           }
-        });
-    }
-    
-    function handleLocationError(errorMsg) {
-			$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>" + errorMsg 
-			+"</h1></div>").css({ "display": "block", "opacity": 0.96, "top": $(window).scrollTop()+ 100 })
-  			.appendTo( $.mobile.pageContainer )
-  			.delay( 1500 )
-  			.fadeOut( 400, function(){
-    			$(this).remove();
-  			});
-		  var indiaPos = {lat: 20.5937, lng: 78.9629};
-		  var map = new google.maps.Map(document.getElementById('map'), {
-          center: indiaPos,
-          zoom: 4
-        });
-        var infoWindow = new google.maps.InfoWindow({map: map});
-        infoWindow.setPosition(indiaPos);
-        infoWindow.setContent(errorMsg);
-      }
-      
-    document.addEventListener("deviceready", onDeviceReady, false);
-	})(window);   
-          
-	 </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC3z-gnkk-CmziAPSFzTderEFjKcrplv_s"> </script>
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">    
+    <!--<script type="text/javascript" src="js/angular.min.js"></script>
+    <script type="text/javascript" src="js/angular-route.min.js"></script>-->
+    <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script type="text/javascript" src="Script/map.js"></script>
+    <!--<script type="text/javascript" src="Script/app.js"></script>
+    <script type="text/javascript" src="Script/Controller/Controller.js"></script>
+    <script type="text/javascript" src="Script/Service/Service.js"></script>-->
     <style>
-		html, body, #map {
-    		width: 100vw;
-   		height:100vh;
-    		margin: 0;
-    		padding: 0;
-		}
-		#map {
-    		/*position: relative;*/
-    		background-color: grey;
-		}
-		.map
-		{
-			padding:0px;
-		}
+        html, body, #map {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            /*position: relative;*/
+            background-color: grey;
+        }
+
+        .map {
+            padding: 0px;
+        }
     </style>
-  </head>
-  <body ng-app="myApp">
-  
-  <div data-role="page" id="pageone">
-  		<div data-role="header" data-position="fixed" style="height:45px;" class="ui-header ui-bar-e">
-    		<a href="#" class="ui-btn ui-btn-up-e ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left" data-theme="e">Home</a>
-  			<h3 style="padding:0px;">Post office Finder</h3>
-  			<a href="#" class="ui-btn ui-btn-up-e ui-corner-all ui-shadow ui-icon-search ui-btn-icon-left" data-theme="e">Search</a>
-  		</div>
-
-  		<div data-role="main" class="ui-body ui-body-e map">
-    		<ng-view></ng-view>
-  		</div>
-
-  		<div data-role="footer" data-position="fixed" class="ui-header ui-bar-e">
-    		<div data-role="navbar" class="ui-navbar ui-mini" role="navigation" style="margin:0px;">
-			<ul class="ui-grid-b">
-				<li class="ui-block-a">
-					<a href="#" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-theme="e" data-inline="true" class="ui-btn ui-btn-up-e ui-btn-inline ui-btn-up-a ui-icon-plus ui-btn-icon-top" >
-						<span class="ui-btn-inner"><span class="ui-btn-text">Facebook</span></span>
-					</a>
-				</li>
-				<li class="ui-block-b">
-					<a href="#" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-theme="e" data-inline="true" class="ui-btn ui-btn-up-e ui-btn-inline ui-btn-up-a ui-icon-plus ui-btn-icon-top">
-						<span class="ui-btn-inner"><span class="ui-btn-text">Twitter</span></span>
-					</a>
-				</li>
-				<li class="ui-block-c">
-					<a href="#" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-theme="e" data-inline="true" class="ui-btn ui-btn-up-e ui-btn-inline ui-btn-up-a ui-icon-plus ui-btn-icon-top">
-						<span class="ui-btn-inner"><span class="ui-btn-text">Instagram</span></span>
-					</a>
-				</li>
-			</ul>
-		</div>
-  		</div>
-	</div>
-  </body>
+</head>
+<body class="ui-mobile-viewport ui-overlay-c" ng-app="myApp">
+    <div data-role="page" id="pageone" class="jqm-demos ui-page ui-body-c ui-page-header-fixed ui-page-footer-fixed ui-page-active"
+         ng-controller="mapViewCtrl">
+        <div data-role="header" data-position="fixed" data-theme="f" class="jqm-header ui-header ui-bar-f ui-header-fixed slidedown" role="banner">
+            <h1 class="ui-title" role="heading" aria-level="1">Post office Finder</h1>
+            <a href="#" class="ui-btn-left ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-notext ui-btn-up-f" data-theme="f"
+               data-icon="gear" data-iconpos="notext" data-iconshadow="true" data-corners="true" data-shadow="true"
+               data-wrapperels="span" title="Setting">
+                <span class="ui-btn-inner">
+                <span class="ui-btn-text">Setting</span>
+                <span class="ui-icon ui-icon-bars ui-icon-shadow">&nbsp;</span></span>
+            </a>
+            
+            <a href="#" class="ui-btn-right ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-notext ui-btn-up-f" data-theme="f"
+               data-icon="home" data-iconpos="notext" data-iconshadow="true" data-corners="true" data-shadow="true"
+               data-wrapperels="span" title="Home">
+                <span class="ui-btn-inner">
+                    <span class="ui-btn-text">Home</span>
+                    <span class="ui-icon ui-icon-home ui-icon-shadow">&nbsp;</span>
+                </span>
+            </a>
+        </div>
+        <div data-role="content" role="main" class="ui-content"  style="padding:0px;">
+           <!--  <ng-view></ng-view> -->
+            <div id="map">   </div>
+        </div>
+        <div data-role="footer" data-id="foo1" data-position="fixed" class="ui-footer ui-bar-a ui-footer-fixed slideup">
+            <div data-role="navbar" class="ui-navbar ui-mini" role="navigation" style="margin:0px;">
+                <ul class="ui-grid-b">
+                    <li class="ui-block-a">
+                        <a href="#" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-theme="e" data-inline="true" class="ui-btn ui-btn-up-e ui-btn-inline ui-btn-up-a ui-icon-plus ui-btn-icon-top" ng-click="Reload()">
+                            <span class="ui-btn-inner"><span class="ui-btn-text">Facebook</span></span>
+                            </a>
+                    </li>
+                    <li class="ui-block-b">
+                        <a href="#" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-theme="e" data-inline="true" class="ui-btn ui-btn-up-e ui-btn-inline ui-btn-up-a ui-icon-plus ui-btn-icon-top">
+                            <span class="ui-btn-inner"><span class="ui-btn-text">Twitter</span></span>
+                        </a>
+                    </li>
+                    <li class="ui-block-c">
+                        <a href="#" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-theme="e" data-inline="true" class="ui-btn ui-btn-up-e ui-btn-inline ui-btn-up-a ui-icon-plus ui-btn-icon-top">
+                            <span class="ui-btn-inner"><span class="ui-btn-text">Instagram</span></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+ 
+</body>
 </html>

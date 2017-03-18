@@ -74,7 +74,12 @@ var SplashScreen = {
             updateImageLocation();
 
             localSplash.appendChild(localSplashImage);
-            document.body.appendChild(localSplash);
+	    if(document.body){
+            	document.body.appendChild(localSplash);
+	    } 
+	    else { 
+		localSplash =null; 
+            }
         }
     },
     hide: function () {

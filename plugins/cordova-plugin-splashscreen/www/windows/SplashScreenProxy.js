@@ -63,8 +63,8 @@ var SplashScreen = {
         localSplashImage.style.transform = "translateY(-50%)";
 
         localSplash.appendChild(localSplashImage);
-        document.body.appendChild(localSplash);
-    },
+  if (document.body){ document.body.appendChild(localSplash);
+  } else { localSplash =null; }     },
     hide: function () {
         if (localSplash) {
             document.body.removeChild(localSplash);

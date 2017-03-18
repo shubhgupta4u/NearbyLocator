@@ -1,45 +1,14 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-var app = {
-    // Application Constructor
-    initialize: function() {
-        this.bindEvents();
-    },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
-    bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
-    },
-    
-    //$(document).bind("mobileinit", function () {
-    //    alert('mobileinit event');
-    //    // Make your jQuery Mobile framework configuration changes here!
-    //    $.mobile.allowCrossDomainPages = true;
-    //});// Wait for device API libraries to load
-       
+﻿//$(document).bind("mobileinit", function () {
+//    alert('mobileinit event');
+//    // Make your jQuery Mobile framework configuration changes here!
+//    $.mobile.allowCrossDomainPages = true;
+//});// Wait for device API libraries to load
 
-    function onDeviceReady() {
-            document.addEventListener("online", onOnline, false);
-document.addEventListener("resume", onResume, false);
-loadMapsApi();
+
+function onDeviceReady() {
+    document.addEventListener("online", onOnline, false);
+    document.addEventListener("resume", onResume, false);
+    loadMapsApi();
 }
 
 function onOnline() {
@@ -98,13 +67,13 @@ function initMap(lat, long) {
     var infowindow = new google.maps.InfoWindow();
     geocoder.geocode({ 'location': currentPos }, function (results, status) {
         if (status === 'OK') {
-            if (results[1]) {
+            if (results[0]) {
                 map.setZoom(11);
                 var marker = new google.maps.Marker({
                     position: currentPos,
                     map: map
                 });
-                infowindow.setContent(results[1].formatted_address);
+                infowindow.setContent(results[0].formatted_address);
                 marker.addListener('click', function () {
                     infowindow.open(map, marker);
                 });
@@ -122,7 +91,7 @@ function initMap(lat, long) {
 
 function displayPopup(msg) {
     $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h3>" + msg + "</h3></div>")
-                    .css({ "display": "block","text-align":"center", "color": "white", "background-color": "grey", "opacity": 0.96, "top": $(window).height() / 2 - 50, "width": $(window).width()-20,"left":"10px" })
+                    .css({ "display": "block", "text-align": "center", "color": "white", "background-color": "grey", "opacity": 0.96, "top": $(window).height() / 2 - 50, "width": $(window).width() - 20, "left": "10px" })
                         .appendTo($.mobile.pageContainer)
                         .delay(1500)
                         .fadeOut(4000, function () {
@@ -145,5 +114,3 @@ function handleLocationError(errorMsg) {
 
 document.addEventListener("deviceready", onDeviceReady, false);
 
-
-};
