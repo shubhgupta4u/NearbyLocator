@@ -75,6 +75,7 @@ var SplashScreen = {
 
             localSplash.appendChild(localSplashImage);
            if (document.body){ document.body.appendChild(localSplash);
+  } else { localSplash =null; }    }
     },
     hide: function () {
         if(localSplash) {
