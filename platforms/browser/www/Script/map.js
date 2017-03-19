@@ -1,21 +1,27 @@
 ﻿var iconBase = 'img/';
 var activePage = 'home';
-var icons = {
+var pages = {
     restaurant: {
         icon: {
             url: iconBase + 'resturant-icon2.png',
             scaledSize: new google.maps.Size(50, 50), // scaled size
             origin: new google.maps.Point(0, 0), // origin
             anchor: new google.maps.Point(0, 0) // anchor
-        }
+        },
+        zoom: 13,
+        circle1Radius:1000,
+        circle2Radius: 2000
     },
-    user: {
+    home: {
         icon: {
             url: iconBase + 'loc-icon2.png',
             scaledSize: new google.maps.Size(50, 50), // scaled size
             origin: new google.maps.Point(0, 0), // origin
             anchor: new google.maps.Point(0, 0) // anchor
-        }
+        },
+        zoom: 13,
+        circle1Radius:1000,
+        circle2Radius: 2000
     },
     hospital: {
         icon: {
@@ -23,7 +29,21 @@ var icons = {
             scaledSize: new google.maps.Size(50, 50), // scaled size
             origin: new google.maps.Point(0, 0), // origin
             anchor: new google.maps.Point(0, 0) // anchor
-        }
+        },
+        zoom: 11,
+        circle1Radius: 5000,
+        circle2Radius: 10000
+    },
+    petrolpump: {
+         icon: {
+                url: iconBase + 'pump-icon.png',
+                scaledSize: new google.maps.Size(32, 32), // scaled size
+                origin: new google.maps.Point(0, 0), // origin
+                anchor: new google.maps.Point(0, 0) // anchor
+         },
+         zoom: 12,
+         circle1Radius: 3000,
+         circle2Radius: 5000
     }
 }
 var infoWindows = [];
@@ -86,7 +106,7 @@ function initMap(lat, long) {
     var currentPos = { lat: lat, lng: long };
     var map = new google.maps.Map(document.getElementById('map'), {
         center: currentPos,
-        zoom: 14
+        zoom: pages[activePage].zoom
     });
     var cityCircle = new google.maps.Circle({
         strokeColor: '#00FF00',
@@ -96,7 +116,7 @@ function initMap(lat, long) {
         fillOpacity: 0.35,
         map: map,
         center: currentPos,
-        radius: (activePage == 'hospital')? (10 * 1000): (1 * 1000)
+        radius: pages[activePage].circle1Radius
     });
 
     var cityCircle = new google.maps.Circle({
@@ -107,7 +127,7 @@ function initMap(lat, long) {
         fillOpacity: 0.35,
         map: map,
         center: currentPos,
-        radius: (activePage == 'hospital') ? (20 * 1000) : (2 * 1000)
+        radius: pages[activePage].circle2Radius
     });
 
     var geocoder = new google.maps.Geocoder();
@@ -117,7 +137,7 @@ function initMap(lat, long) {
             if (results[0]) {
                 var marker = new google.maps.Marker({
                     position: currentPos,
-                    icon: icons['user'].icon,
+                    icon: pages['home'].icon,
                     map: map
                 });
                 infowindow.setContent(results[0].formatted_address);
@@ -131,13 +151,19 @@ function initMap(lat, long) {
                 {
                     var address = results[0].address_components;
                     var zipcode = address[address.length - 1].long_name;
-                    locateNearByHospital(map, zipcode);
+                    locateNearByHospitals(map, zipcode, lat, long);
                 }
-                else if (activePage == 'resturant')
+                else if (activePage == 'restaurant')
                 {
                     locateNearByResturants(map, lat, long)
                 }
-                
+                else if (activePage == 'petrolpump')
+                {
+                    locateNearByPetrolPumps(map, lat, long)
+                }
+                else if (activePage == 'custom') {
+                    //locateNearByPetrolPumps(map, lat, long)
+                }
             }
             else {
                 displayPopup("No results found.");
@@ -168,7 +194,7 @@ function handleExternalURLs() {
         });        
     }
     $(document).on('click', 'a[href^="#LocateRestaurant"]', function (e) {
-        activePage = 'resturant';
+        activePage = 'restaurant';
         clearMarkers();
         loadMapsApi();
         e.preventDefault();
@@ -181,6 +207,18 @@ function handleExternalURLs() {
     });
     $(document).on('click', 'a[href^="#Home"]', function (e) {
         activePage = 'home';
+        clearMarkers();
+        loadMapsApi();
+        e.preventDefault();
+    });
+    $(document).on('click', 'a[href^="#PetrolPump"]', function (e) {
+        activePage = 'petrolpump';
+        clearMarkers();
+        loadMapsApi();
+        e.preventDefault();
+    });
+    $(document).on('click', 'a[href^="#Custom"]', function (e) {
+        activePage = 'custom';
         clearMarkers();
         loadMapsApi();
         e.preventDefault();
@@ -231,7 +269,7 @@ function createResturantMarker(map, restaurant)
     
     var marker = new google.maps.Marker({
         position: restaurantPos,
-        icon: icons['restaurant'].icon,
+        icon: pages['restaurant'].icon,
         map: map
     });
     infowindow.setContent(restaurantInfo);
@@ -315,14 +353,14 @@ function createHospitalMarker(map, hospital, lat, long)
 {
     if (!$.isNumeric(lat) || !$.isNumeric(long)) {
         return;
-    }
-    var hospitalPos = { lat: lat, lng: long };
+    }    var hospitalPos = { lat: lat, lng: long };
+
     var infowindow = new google.maps.InfoWindow();
 
 
     var marker = new google.maps.Marker({
         position: hospitalPos,
-        icon: icons['hospital'].icon,
+        icon: pages['hospital'].icon,
         map: map
     });
     var hospitalInfo = createHospitalInfo(hospital);
@@ -331,8 +369,36 @@ function createHospitalMarker(map, hospital, lat, long)
         closeAllInfoWindows();
         infowindow.open(map, marker);
     });
-    //map.setCenter(hospitalPos);
-    map.setZoom(11);
+    infoWindows.push(infowindow);
+    markers.push(marker);
+}
+
+function createTextsearchMarker(map, searchedRecord) {
+    var address = searchedRecord.formatted_address;
+    var name = searchedRecord.name;
+    var lat = parseFloat(searchedRecord.geometry.location.lat);
+    var long = parseFloat(searchedRecord.geometry.location.lng);
+    var icon = searchedRecord.icon;
+    var rating = searchedRecord.rating;
+
+    var searchedRecordPos = { lat: lat, lng: long };
+    var infowindow = new google.maps.InfoWindow();
+    var searchedRecordInfo = "<div><table>";
+    searchedRecordInfo += "<tr><td><b>Name: </b>" + name + "</td></tr>";
+    searchedRecordInfo += "<tr><td><b>Rating: </b>" + rating + "</td></tr>";
+    searchedRecordInfo += "<tr><td><b>Address: </b>" + address + "</td></tr>";
+    searchedRecordInfo += "</table></div>";
+
+    var marker = new google.maps.Marker({
+        position: searchedRecordPos,
+        icon: pages[activePage].icon,
+        map: map
+    });
+    infowindow.setContent(searchedRecordInfo);
+    marker.addListener('click', function () {
+        closeAllInfoWindows();
+        infowindow.open(map, marker);
+    });
     infoWindows.push(infowindow);
     markers.push(marker);
 }
@@ -360,14 +426,37 @@ function locateNearByResturants(map, lat, long)
     });
 }
 
-function locateNearByHospital(map, pincode) {
+function locateNearByHospitals(map, zipcode, lat, long) {
     $.ajax({
         type: "GET",
-        url: "https://data.gov.in/api/datastore/resource.json?resource_id=37670b6f-c236-49a7-8cd7-cc2dc610e32d&api-key=0aea9a938ef72bfbe44fb789135ad11f&filters[pincode]=" + pincode + "&fields=Hospital_Name,Hospital_Category,Location,Address_Original_First_Line,State,District,Pincode,Telephone,Mobile_Number,Location_Coordinates,Website",
+        url: "https://maps.googleapis.com/maps/api/place/textsearch/json?location=" + lat + "," + long + "&radius=10000&type=hospital&query=hospital&key=AIzaSyA5el89rXF1uc2amcFhUet1tMcLc0wcnL4",
         success: function (response) {
-            var records = response.records;
+            var records = response.results;
             $.each(records, function (index, value) {
-                processHospitalRecord(map, value);
+                createTextsearchMarker(map, value);                
+            });
+            $.ajax({
+                type: "GET",
+                url: "https://data.gov.in/api/datastore/resource.json?resource_id=37670b6f-c236-49a7-8cd7-cc2dc610e32d&api-key=0aea9a938ef72bfbe44fb789135ad11f&filters[pincode]=" + zipcode + "&fields=Hospital_Name,Hospital_Category,Location,Address_Original_First_Line,State,District,Pincode,Telephone,Mobile_Number,Location_Coordinates,Website",
+                success: function (response) {
+                    var records = response.records;
+                    $.each(records, function (index, value) {
+                        processHospitalRecord(map, value);
+                    });
+                }
+            });
+        }
+    });   
+}
+
+function locateNearByPetrolPumps(map, lat, long) {
+    $.ajax({
+        type: "GET",
+        url: "https://maps.googleapis.com/maps/api/place/textsearch/json?location=" + lat + "," + long + "&radius=5000&type=gas_station&query=pump&key=AIzaSyA5el89rXF1uc2amcFhUet1tMcLc0wcnL4",
+        success: function (response) {
+            var records = response.results;
+            $.each(records, function (index, value) {
+                createTextsearchMarker(map, value);
             });
         }
     });
