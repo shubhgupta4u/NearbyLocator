@@ -52,8 +52,17 @@ var markers = [];
 function onDeviceReady() {
     document.addEventListener("online", onOnline, false);
     document.addEventListener("resume", onResume, false);
+    SetMapHeight();
     loadMapsApi();
     handleExternalURLs();
+}
+
+function SetMapHeight()
+{
+    var windowHeight = window.innerHeight;
+    var headerHeight = $('.ui-header').outerHeight(true);
+    var headerFooter = $('.ui-footer').outerHeight(true);
+    $('#map').height(windowHeight - headerHeight - headerFooter);
 }
 
 function onOnline() {

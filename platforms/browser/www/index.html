@@ -20,7 +20,7 @@
     <script type="text/javascript" src="Script/Controller/Controller.js"></script>
     <script type="text/javascript" src="Script/Service/Service.js"></script>-->
     <style>
-        html, body, #map {
+        html, body {
             width: 100vw;
             height: 100vh;
             margin: 0;
@@ -29,6 +29,7 @@
 
         #map {
             /*position: relative;*/
+            height:100%;
             margin: 0;
             padding: 0;
             background-color: grey;
@@ -44,21 +45,12 @@
          ng-controller="mapViewCtrl">
         <div data-role="header" data-position="fixed" data-theme="f" class="jqm-header ui-header ui-bar-f ui-header-fixed slidedown" role="banner">
             <h1 class="ui-title" role="heading" aria-level="1">Nearby Locator</h1>
-            <a href="#About" class="ui-btn-right ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-notext ui-btn-up-f" data-theme="f"
-               data-icon="info" data-iconpos="notext" data-iconshadow="true" data-corners="true" data-shadow="true"
-               data-wrapperels="span" title="About">
-                <span class="ui-btn-inner">
-                <span class="ui-btn-text">About</span>
-                <span class="ui-icon ui-icon-bars ui-icon-shadow">&nbsp;</span></span>
+            <a href="#About" class="ui-btn-right" 
+               data-icon="info" data-iconpos="notext" data-iconshadow="true" data-corners="true" data-shadow="true">About
             </a>
             
-            <a href="#Home" class="ui-btn-left ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-notext ui-btn-up-f" data-theme="f"
-               data-icon="home" data-iconpos="notext" data-iconshadow="true" data-corners="true" data-shadow="true"
-               data-wrapperels="span" title="Home">
-                <span class="ui-btn-inner">
-                    <span class="ui-btn-text">Home</span>
-                    <span class="ui-icon ui-icon-home ui-icon-shadow">&nbsp;</span>
-                </span>
+            <a href="#Home" class="ui-btn-left" 
+               data-icon="home" data-iconpos="notext" data-iconshadow="true" data-corners="true" data-shadow="true">Home
             </a>
         </div>
         <div data-role="content" role="main" class="ui-content"  style="padding:0px;">
