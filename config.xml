@@ -1,9 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.shubhg.pincodefinder" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
-    <name>PincodeFinder</name>
+<widget id="com.shubhg.restaurantLocator" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+    <name>RestaurantLocator</name>
     <description>
-        PincodeFinder is an app to find the India's post offices within's a radius from your current location.
-    </description>
+        RestaurantLocator is an app to find the India's restaurant that are nearby from your current location.    </description>
     <author email="shubhgupta4u@gmail.com" href="https://www.linkedin.com/in/shubh-gupta-63607313/">
         Shubh Gupta
     </author>
