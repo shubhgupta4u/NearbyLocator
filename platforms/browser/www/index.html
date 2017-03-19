@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html class="ui-mobile">
 <head>
-    <title>Restaurant Locator</title>
+    <title>Restaurant / Hospital Locator</title>
     <meta charset="utf-8" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="msapplication-tap-highlight" content="no" />
@@ -41,16 +41,16 @@
     <div data-role="page" id="pageone" class="jqm-demos ui-page ui-body-c ui-page-header-fixed ui-page-footer-fixed ui-page-active"
          ng-controller="mapViewCtrl">
         <div data-role="header" data-position="fixed" data-theme="f" class="jqm-header ui-header ui-bar-f ui-header-fixed slidedown" role="banner">
-            <h1 class="ui-title" role="heading" aria-level="1">Restaurant Locator</h1>
-            <a href="#" class="ui-btn-left ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-notext ui-btn-up-f" data-theme="f"
-               data-icon="gear" data-iconpos="notext" data-iconshadow="true" data-corners="true" data-shadow="true"
-               data-wrapperels="span" title="Setting">
+            <h1 class="ui-title" role="heading" aria-level="1">Nearby Locator</h1>
+            <a href="#About" class="ui-btn-right ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-notext ui-btn-up-f" data-theme="f"
+               data-icon="info" data-iconpos="notext" data-iconshadow="true" data-corners="true" data-shadow="true"
+               data-wrapperels="span" title="About">
                 <span class="ui-btn-inner">
-                <span class="ui-btn-text">Setting</span>
+                <span class="ui-btn-text">About</span>
                 <span class="ui-icon ui-icon-bars ui-icon-shadow">&nbsp;</span></span>
             </a>
             
-            <a href="#" class="ui-btn-right ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-notext ui-btn-up-f" data-theme="f"
+            <a href="#Home" class="ui-btn-left ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-notext ui-btn-up-f" data-theme="f"
                data-icon="home" data-iconpos="notext" data-iconshadow="true" data-corners="true" data-shadow="true"
                data-wrapperels="span" title="Home">
                 <span class="ui-btn-inner">
@@ -65,22 +65,22 @@
         </div>
         <div data-role="footer" data-id="foo1" data-position="fixed" class="ui-footer ui-bar-a ui-footer-fixed slideup">
             <div data-role="navbar" class="ui-navbar ui-mini" role="navigation" style="margin:0px;">
-                <ul class="ui-grid-b">
+                <ul class="ui-grid-a">
                     <li class="ui-block-a">
-                        <a href="#" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-theme="e" data-inline="true" class="ui-btn ui-btn-up-e ui-btn-inline ui-btn-up-a ui-icon-plus ui-btn-icon-top" ng-click="Reload()">
-                            <span class="ui-btn-inner"><span class="ui-btn-text">Facebook</span></span>
-                            </a>
-                    </li>
-                    <li class="ui-block-b">
-                        <a href="#" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-theme="e" data-inline="true" class="ui-btn ui-btn-up-e ui-btn-inline ui-btn-up-a ui-icon-plus ui-btn-icon-top">
-                            <span class="ui-btn-inner"><span class="ui-btn-text">Twitter</span></span>
+                        <a href="#LocateRestaurant" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-theme="e" data-inline="true" class="ui-btn ui-btn-up-e ui-btn-inline ui-btn-up-a ui-icon-search ui-btn-icon-top">
+                           <span class="ui-btn-inner"><span class="ui-btn-text">Restaurant</span></span>
                         </a>
                     </li>
-                    <li class="ui-block-c">
+                    <li class="ui-block-b">
+                        <a href="#LocateHospital" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-theme="e" data-inline="true" class="ui-btn ui-btn-up-e ui-btn-inline ui-btn-up-a ui-icon-search ui-btn-icon-top">
+                           <span class="ui-btn-inner"><span class="ui-btn-text">Hospital</span></span>
+                        </a>
+                    </li>
+                    <!--<li class="ui-block-c">
                         <a href="#" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-theme="e" data-inline="true" class="ui-btn ui-btn-up-e ui-btn-inline ui-btn-up-a ui-icon-plus ui-btn-icon-top">
                             <span class="ui-btn-inner"><span class="ui-btn-text">Instagram</span></span>
                         </a>
-                    </li>
+                    </li>-->
                 </ul>
             </div>
         </div>

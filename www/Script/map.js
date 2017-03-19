@@ -1,4 +1,5 @@
 ﻿var iconBase = 'img/';
+var activePage = 'home';
 var icons = {
     restaurant: {
         icon: {
@@ -15,9 +16,18 @@ var icons = {
             origin: new google.maps.Point(0, 0), // origin
             anchor: new google.maps.Point(0, 0) // anchor
         }
+    },
+    hospital: {
+        icon: {
+            url: iconBase + 'hospital-icon3.png',
+            scaledSize: new google.maps.Size(50, 50), // scaled size
+            origin: new google.maps.Point(0, 0), // origin
+            anchor: new google.maps.Point(0, 0) // anchor
+        }
     }
 }
 var infoWindows = [];
+var markers = [];
 
 function onDeviceReady() {
     document.addEventListener("online", onOnline, false);
@@ -86,7 +96,7 @@ function initMap(lat, long) {
         fillOpacity: 0.35,
         map: map,
         center: currentPos,
-        radius: 1 * 1000
+        radius: (activePage == 'hospital')? (10 * 1000): (1 * 1000)
     });
 
     var cityCircle = new google.maps.Circle({
@@ -97,7 +107,7 @@ function initMap(lat, long) {
         fillOpacity: 0.35,
         map: map,
         center: currentPos,
-        radius: 2 * 1000
+        radius: (activePage == 'hospital') ? (20 * 1000) : (2 * 1000)
     });
 
     var geocoder = new google.maps.Geocoder();
@@ -116,7 +126,18 @@ function initMap(lat, long) {
                     infowindow.open(map, marker);
                 });
                 infoWindows.push(infowindow);
-                locateNearByResturants(map, lat, long)
+                markers.push(marker);
+                if (activePage == 'hospital')
+                {
+                    var address = results[0].address_components;
+                    var zipcode = address[address.length - 1].long_name;
+                    locateNearByHospital(map, zipcode);
+                }
+                else if (activePage == 'resturant')
+                {
+                    locateNearByResturants(map, lat, long)
+                }
+                
             }
             else {
                 displayPopup("No results found.");
@@ -144,9 +165,38 @@ function handleExternalURLs() {
             var url = $(this).attr('href');
             window.open(url, "_system");
             e.preventDefault();
-        });
-        
+        });        
     }
+    $(document).on('click', 'a[href^="#LocateRestaurant"]', function (e) {
+        activePage = 'resturant';
+        clearMarkers();
+        loadMapsApi();
+        e.preventDefault();
+    });
+    $(document).on('click', 'a[href^="#LocateHospital"]', function (e) {
+        activePage = 'hospital';
+        clearMarkers();
+        loadMapsApi();
+        e.preventDefault();
+    });
+    $(document).on('click', 'a[href^="#Home"]', function (e) {
+        activePage = 'home';
+        clearMarkers();
+        loadMapsApi();
+        e.preventDefault();
+    });
+    $(document).on('click', 'a[href^="#About"]', function (e) {
+        displayPopup("Resturant / Hospital Locator<Br/>Developed By Shubh Gupta<br/>Contact at shubhgupta4u@gmail.com");
+        e.preventDefault();
+    });
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);        
+    }
+    markers = [];
 }
 
 function createResturantMarker(map, restaurant)
@@ -190,6 +240,101 @@ function createResturantMarker(map, restaurant)
         infowindow.open(map, marker);
     });
     infoWindows.push(infowindow);
+    markers.push(marker);
+}
+
+function createHospitalInfo(hospital)
+{
+    var name = hospital.Hospital_Name;
+    var category = hospital.Hospital_Category;
+    var address = hospital.Location;
+    var state = hospital.State;
+    var district = hospital.District;
+    var pincode = hospital.Pincode;
+    var telephone = hospital.Telephone;
+    var mobile = hospital.Mobile_Number;
+    var url = hospital.Website;
+
+    var hospitalInfo = "<div><table>";
+    if (url.length > 0 && url != "NA") {
+        hospitalInfo += "<tr><td><b>Hospital Name: </b><a href='" + url + "'>" + name + "</a></td></tr>";
+    }
+    else {
+        url = "https://www.google.co.in/?q=" + encodeURI(name + " " + address);
+        hospitalInfo += "<tr><td><b>Hospital Name: </b><a href='" + url + "'>" + name + "</a></td></tr>";
+    }
+    if (category.length > 0 && category != "NA") {
+        hospitalInfo += "<tr><td><b>Category: </b>" + category + "</td></tr>";
+    }
+    if (telephone.length > 0 && telephone != "NA") {
+        hospitalInfo += "<tr><td><b>Telephone: </b>" + telephone + "</td></tr>";
+    }
+    if (mobile.length > 0 && mobile != "NA") {
+        hospitalInfo += "<tr><td><b>Mobile: </b>" + mobile + "</td></tr>";
+    }
+    hospitalInfo += "<tr><td><b>Address: </b>" + address + "</td></tr>";
+    hospitalInfo += "<tr><td><b>District: </b>" + district + "</td></tr>";
+    hospitalInfo += "<tr><td><b>State: </b>" + state + "</td></tr>";
+    hospitalInfo += "</table></div>";
+
+    return hospitalInfo;
+}
+
+function processHospitalRecord(map, hospital) {
+    var name = hospital.Hospital_Name;
+    var address = hospital.Location;
+    var state = hospital.State;
+    var district = hospital.District;
+    var pincode = hospital.Pincode;
+    var coordinates = hospital.Location_Coordinates;
+    var lat;
+    var long;
+    if (coordinates.indexOf(',') == -1 || coordinates == "NA")
+    {
+        var address = name + "+" + address + "+" + district + "+" + state + "+" + pincode;
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode( { 'address': address}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                lat = results[0].geometry.location.lat();
+                long = results[0].geometry.location.lng();
+                createHospitalMarker(map, hospital, lat, long);
+            }
+        });
+    }
+    else
+    {
+        var coord = coordinates.split(",");
+        //11.6357989, 92.7120575
+        lat = parseFloat(coord[0].trim());
+        long = parseFloat(coord[1].trim());
+        createHospitalMarker(map, hospital, lat, long);
+    }    
+}
+
+function createHospitalMarker(map, hospital, lat, long)
+{
+    if (!$.isNumeric(lat) || !$.isNumeric(long)) {
+        return;
+    }
+    var hospitalPos = { lat: lat, lng: long };
+    var infowindow = new google.maps.InfoWindow();
+
+
+    var marker = new google.maps.Marker({
+        position: hospitalPos,
+        icon: icons['hospital'].icon,
+        map: map
+    });
+    var hospitalInfo = createHospitalInfo(hospital);
+    infowindow.setContent(hospitalInfo);
+    marker.addListener('click', function () {
+        closeAllInfoWindows();
+        infowindow.open(map, marker);
+    });
+    //map.setCenter(hospitalPos);
+    map.setZoom(11);
+    infoWindows.push(infowindow);
+    markers.push(marker);
 }
 
 function closeAllInfoWindows() {
@@ -215,12 +360,25 @@ function locateNearByResturants(map, lat, long)
     });
 }
 
+function locateNearByHospital(map, pincode) {
+    $.ajax({
+        type: "GET",
+        url: "https://data.gov.in/api/datastore/resource.json?resource_id=37670b6f-c236-49a7-8cd7-cc2dc610e32d&api-key=0aea9a938ef72bfbe44fb789135ad11f&filters[pincode]=" + pincode + "&fields=Hospital_Name,Hospital_Category,Location,Address_Original_First_Line,State,District,Pincode,Telephone,Mobile_Number,Location_Coordinates,Website",
+        success: function (response) {
+            var records = response.records;
+            $.each(records, function (index, value) {
+                processHospitalRecord(map, value);
+            });
+        }
+    });
+}
+
 function displayPopup(msg) {
     $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h3>" + msg + "</h3></div>")
                     .css({ "display": "block", "text-align": "center", "color": "white", "background-color": "grey", "opacity": 0.96, "top": $(window).height() / 2 - 50, "width": $(window).width() - 20, "left": "10px" })
                         .appendTo($.mobile.pageContainer)
-                        .delay(1500)
-                        .fadeOut(4000, function () {
+                        .delay(2000)
+                        .fadeOut(2000, function () {
                             $(this).remove();
                         });
 }
