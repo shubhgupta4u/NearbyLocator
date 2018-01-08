@@ -99,6 +99,7 @@ function LoadGoogleMapApi()
 }
 
 function onDeviceReady() {
+    document.removeEventListener('deviceready', onDeviceReady, false);
     if (!isConnectionEventRegistered) {
         document.addEventListener("online", onOnline, false);
         document.addEventListener("resume", onResume, false);
@@ -201,7 +202,7 @@ function initMap(map, lat, long) {
         fillOpacity: 0.35,
         map: map,
         center: currentPos,
-        radius: pages[activePage].circle1Radius
+        radius: (pages[activePage] == undefined || pages[activePage] == null)? 2000:pages[activePage].circle1Radius
     });
     circles.push(redCircle);
 
@@ -213,7 +214,7 @@ function initMap(map, lat, long) {
         fillOpacity: 0.35,
         map: map,
         center: currentPos,
-        radius: pages[activePage].circle2Radius
+        radius: (pages[activePage] == undefined || pages[activePage] == null) ? 5000 : pages[activePage].circle2Radius
     });
     circles.push(greenCircle);
 
@@ -255,19 +256,27 @@ function GeocodeLocation(map, lat, long, isWait)
                     var address = results[0].address_components;
                     var zipcode = address[address.length - 1].long_name;
                     locateNearByHospitals(map, zipcode, lat, long);
+                    removePlaceTypeChooserControl();
                 }
                 else if (activePage == 'restaurant') {
                     locateNearByResturants(map, lat, long)
+                    removePlaceTypeChooserControl();
                 }
                 else if (activePage == 'petrolpump') {
                     locateNearByPetrolPumps(map, lat, long)
+                    removePlaceTypeChooserControl();
+                }
+                else if (activePage == 'home') {
+                    hideProcessingMsg();
+                    removePlaceTypeChooserControl();
                 }
                 else if (activePage == 'custom') {
-                    //locateNearByPetrolPumps(map, lat, long)
                     hideProcessingMsg();
+                    addPlaceTypeChooserControl(map);
                 }
                 else
                 {
+                    locateNearByCustomPlaces(map, lat, long)
                     hideProcessingMsg();
                 }
             }
@@ -332,6 +341,7 @@ function addMyLocationButton(map) {
         }, 500);
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
+                clearMarkerCircle();
                 initMap(map, position.coords.latitude, position.coords.longitude);
                 clearInterval(animationInterval);
                 $('#you_location_img').css('background-position', '-144px 0px');
@@ -384,12 +394,70 @@ function addMyPlaceMarkerButton(map) {
             }
             $('#new_location_img').css('backgroundSize', '18px 18px');
         }, 500);
-        isAddMyPlaceMarkerButton = true;        
+        isAddMyPlaceMarkerButton = true;
     });
 
     controlDiv.index = 2;
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(controlDiv);
 }
+
+function loadCustomMap(e)
+{
+    if (e == "")
+    {
+        return;
+    }
+    showProcessingMsg();
+    activePage = e;
+    clearMarkerCircle();
+    initMap(map, currentPos.lat, currentPos.lng);
+}
+
+function addPlaceTypeChooserControl(map) {
+    // Set CSS for the control interior 
+    var controlText = document.createElement('DIV');
+    controlText.style.fontFamily = 'Arial,sans-serif';
+    controlText.style.fontSize = '12px';
+    controlText.style.marginTop ='10px';
+    controlText.style.marginLeft = '10px';
+    controlText.style.paddingLeft = '4px';
+    controlText.style.paddingRight = '4px';
+    controlText.id = "PlaceTypeChooserControl";
+    controlText.className = 'ui-field-contain';
+    controlText.innerHTML = '<form name="detail_form"><select  name="detail_level"  onchange="loadCustomMap(document.detail_form.detail_level.options[document.detail_form.detail_level.selectedIndex].value)">'+ 
+    '<option value="">Choose Type</option>' +
+    '<option value="atm">ATM</option>' +
+    '<option value="bank">Bank</option>' +
+    '<option value="bus_station">Bus Station</option>' +
+    '<option value="shopping_mall">Shopping Mall</option>' +   
+    '<option value="park">Park</option>' +
+    '<option value="pharmacy">Pharmacy</option>' +
+    '<option value="police">police</option>' +
+    '<option value="post_office">Post Office</option>' +
+    '<option value="taxi_stand">Taxi Stand</option>' +
+    '<option value="hindu_temple">Temple</option>' +
+    '<option value="train_station">Train Station</option>' +
+    '</select></form>'; 
+
+    controlText.index = 1;
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(controlText);
+}
+
+function removePlaceTypeChooserControl()
+{
+    var indexOfControl = null,
+    bottomCenterControls = map.controls[google.maps.ControlPosition.TOP_LEFT];
+    bottomCenterControls.forEach(function (element,
+                                             index) {
+        if (element.id === 'PlaceTypeChooserControl') {
+            indexOfControl = index;
+        }
+    });
+    if (indexOfControl >= 0){
+        bottomCenterControls.removeAt(indexOfControl);
+    }
+}
+
 
 function handleExternalURLs() {
     // Handle click events for all external URLs
@@ -618,10 +686,13 @@ function createTextsearchMarker(map, searchedRecord) {
     searchedRecordInfo += "<tr><td><b>Rating: </b>" + rating + "</td></tr>";
     searchedRecordInfo += "<tr><td><b>Address: </b>" + address + "</td></tr>";
     searchedRecordInfo += "</table></div>";
-
+    if (pages[activePage] != null && pages[activePage] != undefined)
+    {
+        icon = pages[activePage].icon;
+    } 
     var marker = new google.maps.Marker({
         position: searchedRecordPos,
-        icon: pages[activePage].icon,
+        icon: icon,
         map: map
     });
     infowindow.setContent(searchedRecordInfo);
@@ -696,6 +767,24 @@ function locateNearByPetrolPumps(map, lat, long) {
     $.ajax({
         type: "GET",
         url: "https://maps.googleapis.com/maps/api/place/textsearch/json?location=" + lat + "," + long + "&radius=5000&type=gas_station&query=pump&key=AIzaSyA5el89rXF1uc2amcFhUet1tMcLc0wcnL4",
+        success: function (response) {
+            var records = response.results;
+            $.each(records, function (index, value) {
+                createTextsearchMarker(map, value);
+            });
+
+            hideProcessingMsg();
+        }
+    });
+}
+
+function locateNearByCustomPlaces(map, lat, long) {
+    if (!$.isNumeric(lat) || !$.isNumeric(long)) {
+        return;
+    }
+    $.ajax({
+        type: "GET",
+        url: "https://maps.googleapis.com/maps/api/place/textsearch/json?location=" + lat + "," + long + "&radius=5000&type=" + activePage + "&key=AIzaSyA5el89rXF1uc2amcFhUet1tMcLc0wcnL4",
         success: function (response) {
             var records = response.results;
             $.each(records, function (index, value) {

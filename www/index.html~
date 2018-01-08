@@ -59,7 +59,7 @@
         </div>
         <div data-role="footer" data-id="foo1" data-position="fixed" class="ui-footer ui-bar-a ui-footer-fixed slideup">
             <div data-role="navbar" class="ui-navbar ui-mini" role="navigation" style="margin:0px;">
-                <ul class="ui-grid-b">
+                <ul class="ui-grid-c">
                     <li class="ui-block-a">
                         <a href="#LocateRestaurant" data-corners="false" data-shadow="false" data-iconshadow="true" data-role="button" data-wrapperels="span" data-theme="e" data-inline="true" class="ui-btn ui-btn-up-e ui-btn-inline ui-btn-up-a ui-icon-search ui-btn-icon-top">
                            <span class="ui-btn-inner"><span class="ui-btn-text">Restaurant</span></span>

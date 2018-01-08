@@ -6,9 +6,9 @@
     <feature name="Device">
         <param name="browser-package" value="Device" />
     </feature>
-    <name>NearbyLocator</name>
+    <name>NearbyPlacesLocator</name>
     <description>
-        NearbyLocator is an app to find the places that are nearby from your current location.    </description>
+        NearbyPlacesLocator is an app to find the places that are nearby from your current location.    </description>
     <author email="shubhgupta4u@gmail.com" href="https://www.linkedin.com/in/shubh-gupta-63607313/">
         Shubh Gupta
     </author>

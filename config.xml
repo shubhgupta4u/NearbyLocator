@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.shubhg.nearbyLocator" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
-    <name>NearbyLocator</name>
+    <name>NearbyPlacesLocator</name>
     <description>
-        NearbyLocator is an app to find the places that are nearby from your current location.    </description>
+        NearbyPlacesLocator is an app to find the places that are nearby from your current location.    </description>
     <author email="shubhgupta4u@gmail.com" href="https://www.linkedin.com/in/shubh-gupta-63607313/">
         Shubh Gupta
     </author>
@@ -35,7 +35,7 @@
 
 
     <plugin name="cordova-plugin-battery-status" source="npm" spec="~1.1.1" />
-    <plugin name="cordova-plugin-camera" source="npm" spec="~2.1.1" />
+   <plugin name="cordova-plugin-camera" source="npm" spec="~2.1.1" />
     <plugin name="cordova-plugin-media-capture" source="npm" spec="~1.2.0" />
     <plugin name="cordova-plugin-console" source="npm" spec="~1.0.2" />
     <plugin name="cordova-plugin-contacts" source="npm" spec="~2.0.1" />
